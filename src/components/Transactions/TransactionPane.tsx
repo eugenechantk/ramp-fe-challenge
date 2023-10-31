@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { InputCheckbox } from "../InputCheckbox"
+import { InputCheckbox } from "../InputCheckbox/index"
 import { TransactionPaneComponent } from "./types"
 
 export const TransactionPane: TransactionPaneComponent = ({
@@ -23,12 +23,18 @@ export const TransactionPane: TransactionPaneComponent = ({
         checked={approved}
         disabled={loading}
         onChange={async (newValue) => {
-          await consumerSetTransactionApproval({
-            transactionId: transaction.id,
-            newValue,
-          })
-
+          // do an optimistic update first
+          // and then revert back if there is an error
           setApproved(newValue)
+          try {
+            await consumerSetTransactionApproval({
+              transactionId: transaction.id,
+              newValue,
+            })
+          } catch (err) {
+            console.log(err)
+            setApproved(!newValue)
+          }
         }}
       />
     </div>
