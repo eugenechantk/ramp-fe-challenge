@@ -64,11 +64,10 @@ export function App() {
             if (newValue === null) {
               return
             }
-            
+
             // added case where user selects "All Employees"
             if (newValue.id === EMPTY_EMPLOYEE.id) {
-              paginatedTransactionsUtils.invalidateData()
-              await paginatedTransactionsUtils.fetchAll()
+              await loadAllTransactions()
               return
             }
 
