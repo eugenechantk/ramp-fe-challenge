@@ -31,7 +31,9 @@ export function App() {
 
   const loadTransactionsByEmployee = useCallback(
     async (employeeId: string) => {
+      // clear out all transaction states first
       paginatedTransactionsUtils.invalidateData()
+      transactionsByEmployeeUtils.invalidateData()
       await transactionsByEmployeeUtils.fetchById(employeeId)
     },
     [paginatedTransactionsUtils, transactionsByEmployeeUtils]
@@ -80,7 +82,8 @@ export function App() {
         <div className="RampGrid">
           <Transactions transactions={transactions} />
 
-          {transactions !== null && (
+          {/* added conditionals to not render view more button if the transactions is filtered by employee */}
+          {(transactions !== null && transactionsByEmployee === null) && (
             <button
               className="RampButton"
               disabled={paginatedTransactionsUtils.loading}
